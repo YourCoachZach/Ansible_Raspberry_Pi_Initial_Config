@@ -1,0 +1,35 @@
+- hosts: raspbian
+  become: true
+  become_method: sudo
+
+  tasks:
+
+    - name: Update and Upgrade apt packages
+      become: true
+      apt:
+          upgrade: yes
+          update_cache: yes
+          cache_valid_time: 86400 #oneday
+
+#    - name: Install base
+#      apt:
+#        update_cache: yes
+#        name: "{{ item }}"
+#        state: present
+#      with_items:
+#        - realvnc-vnc-server
+#        - realvnc-vnc-viewer
+#        - vim
+#      tags:
+#        - base
+
+#    - name: python virtualenv and wrapper
+#      apt:
+#        update_cache: yes
+#        name: "{{ item }}"
+#        state: present
+#      with_items:
+#        - python-virtualenv
+#        - virtualenvwrapper
+#      tags:
+#        - python

@@ -1,0 +1,66 @@
+---
+#start
+- hosts: touchpi
+  become: true
+  become_method: sudo
+
+  tasks:
+
+  - name: 'Install packages1'
+    apt: name=chromium-browser state=latest
+
+  - name: 'Install packages2'
+    apt: name=xserver-xorg state=latest
+
+  - name: 'Install packages3'
+    apt: name=x11-xserver-utils state=latest
+
+  - name: 'Install packages4'
+    apt: name=xinit state=latest
+
+  - name: 'Install packages5'
+    apt: name=openbox state=latest
+
+  - name: 'Install packages6'
+    apt: name=xscreensaver state=latest
+
+#  become: yes
+#  become_method: sudo
+#  with_items:
+#    - chromium-browser
+#    - xserver-xorg
+#    - x11-xserver-utils
+#    - xinit
+#    - openbox
+
+  - name: "Make Directory1"
+    shell: mkdir /home/pi/.config/autostart/
+
+  - name: 'Transfer file for Kiosk Mode'
+    become: yes
+    become_method: sudo
+    copy: 
+      src: /Users/zstanard/Documents/Builders/Ansible/ansible_playbooks/roles/common/files/kiosk.desktop
+      dest: /home/pi/.config/autostart/
+      mode: 0755
+      backup: yes
+
+  - name: 'Transfer file for Autoboot -bash_profile'
+    become: yes
+    become_method: sudo
+    copy: 
+      src: /Users/zstanard/Documents/Builders/Ansible/ansible_playbooks/roles/common/files/kiosk.sh
+      dest: /home/pi/
+      mode: 0755
+      backup: yes
+  
+  - name: "Run Shell Command"
+    shell: chmod +x /home/pi/kiosk.sh
+
+  - name: 'Reboot'
+    become: yes
+    become_method: sudo
+    command: shutdown -r now "Ansible updates triggered"
+    async: 0
+    poll: 0
+    ignore_errors: true
